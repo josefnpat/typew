@@ -10,7 +10,12 @@ DEPFLAGS = -MMD -MP
 
 # Locate ncurses via pkg-config when available; fall back to the default
 # linker flags otherwise. Override with NCURSES_CFLAGS / NCURSES_LDFLAGS.
-NCURSES_CFLAGS ?= $(shell pkg-config --cflags ncurses 2>/dev/null || true)
+#
+# Only the include path (-I...) is taken from pkg-config. Debian/Ubuntu's
+# ncurses.pc also emits -D_DEFAULT_SOURCE -D_XOPEN_SOURCE=600, which would
+# redefine the feature-test macros each translation unit defines itself and
+# break -Werror builds.
+NCURSES_CFLAGS ?= $(shell pkg-config --cflags-only-I ncurses 2>/dev/null || true)
 NCURSES_LDFLAGS ?= $(if $(shell pkg-config --exists ncurses 2>/dev/null && echo yes),$(shell pkg-config --libs ncurses),-lncurses)
 
 CPPFLAGS += $(NCURSES_CFLAGS)
