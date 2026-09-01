@@ -28,11 +28,13 @@ jobs:
           make clean
           make CFLAGS='-O2 -Werror'
 
-  cygwin:
+  build-and-test-cygwin:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
+      # The install action also sets the default shell to Cygwin bash for
+      # the subsequent run steps, so no extra shell config is needed.
       - name: Install Cygwin + ncurses + gcc
         uses: cygwin/cygwin-install-action@v4
         with:
@@ -43,3 +45,8 @@ jobs:
 
       - name: Test
         run: make test
+
+      - name: Build with -Werror (zero warnings required)
+        run: |
+          make clean
+          make CFLAGS='-O2 -Werror'
