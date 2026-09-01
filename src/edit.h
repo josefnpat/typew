@@ -9,7 +9,6 @@
 #include "config.h"
 
 enum {
-    EDIT_KEY_ERR = -1,
     EDIT_KEY_ESC = 27
 };
 #define EDIT_KEY_UP       1000

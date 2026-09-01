@@ -50,6 +50,8 @@ int buffer_line_len(const Buffer *buf, int line) {
 }
 
 void buffer_set_char(Buffer *buf, int line, int col, char c) {
+    if (line < 0 || col < 0)
+        return;
     buffer_ensure_line(buf, line);
     int len = buffer_line_len(buf, line);
     if (col < len) {
