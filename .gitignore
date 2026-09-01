@@ -1,0 +1,7 @@
+typew
+.DS_Store
+*.o
+*.d
+.deps_check.*
+src/default_ini.h
+tests/test_*

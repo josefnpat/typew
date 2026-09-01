@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ncurses (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libncurses-dev
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make test
+
+      - name: Build with -Werror (zero warnings required)
+        run: |
+          make clean
+          make CFLAGS='-O2 -Werror'
+
+  cygwin:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Cygwin + ncurses + gcc
+        uses: cygwin/cygwin-install-action@v4
+        with:
+          packages: gcc-core make libncurses-devel
+
+      - name: Build
+        run: make
+
+      - name: Test
+        run: make test

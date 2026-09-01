@@ -1,0 +1,145 @@
+.TH typew 1 "September 2026" "typew 0.1" "User Commands"
+.SH NAME
+typew \- terminal write\-only typewriter
+.SH SYNOPSIS
+.B typew
+[\fI\-\-config\fR \fICONFIGFILE\fR | \fI\-c\fR \fICONFIGFILE\fR]
+.I FILENAME
+.SH DESCRIPTION
+.B typew
+is a terminal write\-only typewriter. It loads a
+single file, lets you type freely, and write the buffer back to disk on a
+timer. It has no load/save commands and keeps the entire file in memory
+while you work.
+.PP
+.I FILENAME
+is mandatory and is the file to edit. If it does not exist, it is created.
+If it exists, it is read into memory and the cursor is placed on the line
+below the last one.
+.PP
+The active working line is kept in the middle of the terminal. The current
+character always blinks. The buffer is saved to disk automatically every
+.I save_delay
+seconds when there are unsaved changes.
+.PP
+.B typew
+does not save trailing whitespace.
+.SH OPTIONS
+.TP
+.BI \-c " CONFIGFILE" , \ \fB--config\fR \fICONFIGFILE\fR
+Load configuration from
+.I CONFIGFILE
+instead of the default configuration location (see the
+.B CONFIGURATION
+section below).
+.SH CONFIGURATION
+Configuration is read from
+.I $XDG_CONFIG_HOME/typew/config
+by default (or
+.IR ~/.config/typew/config
+when
+.B XDG_CONFIG_HOME
+is unset; override with
+.BR \-\-config ).
+It uses a simple INI\-style
+.I key = value
+format. Blank lines and lines starting with
+.B #
+or
+.B ;
+are ignored. An example configuration file is written to the default
+location the first time the program runs.
+.PP
+The following keys are supported:
+.TP
+.BI save_delay
+How many seconds to wait before writing the buffer to disk (default
+.BR 1.5 ).
+.TP
+.BI line_endings
+The character(s) written at the end of each line (default
+.BR \en ).
+Options:
+.BR \en ,
+.BR \er\en ,
+.BR \er ,
+or any literal string.
+.TP
+.BI eol_bell
+Ring the terminal bell near the end of the writable line (default
+.BR true ).
+.TP
+.BI bell_count
+How many characters away from the line end the bell rings (default
+.BR 8 ).
+.TP
+.BI eol_lock
+Prevent typing past the end of the line (default
+.BR true ).
+.TP
+.BI line_length
+The maximum line length / right margin, and the minimum terminal width
+(default
+.BR 80 ).
+.TP
+.BI line_space
+How many lines the
+.B Return
+key advances (default
+.BR 1 ).
+Arrow keys always move by one line.
+.TP
+.BI overwrite
+The single character used to mark an overwritten position. When you type
+over a character that already exists, it is replaced with this character
+(default
+.BR # ).
+.SH KEYS
+.TP
+.B Return
+Move to the next logical line and return the cursor to the start.
+.TP
+.B Backspace \fR/\fP Delete
+Move the cursor one column left on the current line.
+.TP
+.B Arrow keys
+Move the current character location. You cannot move above line one, but
+you can move beyond the last line; you cannot move past the left or right
+margin. Typing at a column with empty space inserts leading spaces so the
+character lands where you asked.
+.TP
+.B Escape
+Save (if there is anything to save) and quit.
+.SH FILES
+.TP
+.I $XDG_CONFIG_HOME/typew/config
+(or
+.IR ~/.config/typew/config )
+Default per\-user configuration file, created on first run if missing.
+.SH ENVIRONMENT
+.TP
+.B HOME
+Used to locate the default configuration file.
+.TP
+.B XDG_CONFIG_HOME
+If set, the default configuration file is read from
+.I $XDG_CONFIG_HOME/typew/config
+instead of
+.IR ~/.config/typew/config .
+.SH EXIT STATUS
+.TP
+.B 0
+Successful termination.
+.TP
+.B 1
+Invalid command line (no
+.I FILENAME
+given).
+.SH BUGS
+Report bugs at the typew issue tracker:
+https://github.com/josefnpat/typew/issues
+.SH SEE ALSO
+.BR nano (1),
+.BR vi (1),
+.BR stty (1),
+.BR terminfo (5)
