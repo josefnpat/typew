@@ -75,7 +75,7 @@ KeyResult editor_key(Editor *e, Buffer *buf, const Config *cfg, int key) {
         return r;
 
     if (key >= 32 && key <= 126) {
-        if (cfg->eol_lock && e->col >= cfg->line_length) {
+        if (e->col >= cfg->line_length) {
             r.bell = 1;
             return r;
         }

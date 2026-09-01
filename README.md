@@ -75,7 +75,6 @@ file given with `--config`. Format is INI-style `key = value`.
 | `line_endings` | `\n` | Line ending character(s) |
 | `eol_bell` | `true` | Bell near end of writable line |
 | `bell_count` | `8` | Characters from end to ring bell |
-| `eol_lock` | `true` | Prevent typing past end of line |
 | `line_length` | `80` | Maximum line length |
 | `line_space` | `1` | Lines advanced by Return key |
 | `overwrite` | `#` | Character marking overwritten positions |

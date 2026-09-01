@@ -14,7 +14,6 @@ typedef struct {
     char *line_endings;
     int eol_bell;
     int bell_count;
-    int eol_lock;
     int line_length;
     int line_space;
     char overwrite;

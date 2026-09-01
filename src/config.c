@@ -61,7 +61,6 @@ void config_defaults(Config *cfg) {
     cfg->line_endings = xstrdup("\n");
     cfg->eol_bell = 1;
     cfg->bell_count = 8;
-    cfg->eol_lock = 1;
     cfg->line_length = 80;
     cfg->line_space = 1;
     cfg->overwrite = '#';
@@ -160,8 +159,6 @@ static void apply_key(Config *cfg, const char *key, const char *value) {
         set_bool(&cfg->eol_bell, value);
     else if (strcmp(key, "bell_count") == 0)
         set_int(cfg, key, value);
-    else if (strcmp(key, "eol_lock") == 0)
-        set_bool(&cfg->eol_lock, value);
     else if (strcmp(key, "line_length") == 0)
         set_int(cfg, key, value);
     else if (strcmp(key, "line_space") == 0)
