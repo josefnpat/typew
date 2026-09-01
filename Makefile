@@ -1,4 +1,4 @@
-CC      = cc
+CC      ?= cc
 
 # User-supplied CFLAGS/CPPFLAGS/LDFLAGS from the environment are never
 # overwritten: CFLAGS is left to the user (empty by default) and the
