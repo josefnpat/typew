@@ -59,7 +59,7 @@ check_deps:
 
 $(GEN_HDR): src/default.ini
 	{ printf 'const char DEFAULT_CONFIG[] =\n'; \
-	  sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/^/  "/' -e 's/$$/\\n"/' $<; \
+	  tr -d '\r' < $< | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/^/  "/' -e 's/$$/\\n"/'; \
 	  printf '  ;\n'; \
 	} > $@
 

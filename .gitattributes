@@ -1,0 +1,3 @@
+# Normalize line endings to LF so a Windows checkout (which defaults to
+# CRLF) can't break the generated-header build or corrupt committed files.
+* text=auto eol=lf
