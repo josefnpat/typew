@@ -58,9 +58,10 @@ check_deps:
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(PROJECT_CFLAGS) $(DEPFLAGS) -c -o $@ $<
 
 $(GEN_HDR): src/default.ini
-	awk 'BEGIN{printf "const char DEFAULT_CONFIG[] =\n"} \
-		{ gsub(/\\/,"\\\\"); gsub(/"/,"\\\""); printf "  \"%s\\n\"\n", $$0 } \
-		END{ printf "  ;\n" }' $< > $@
+	{ printf 'const char DEFAULT_CONFIG[] =\n'; \
+	  sed -e 's/\\/\\\\/g' -e 's/"/\\"/g' -e 's/^/  "/' -e 's/$$/\\n"/' $<; \
+	  printf '  ;\n'; \
+	} > $@
 
 src/config.o: $(GEN_HDR)
 
