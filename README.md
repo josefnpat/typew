@@ -13,21 +13,24 @@ commands — press **Escape** to save and quit.
 - [GNU Make](https://www.gnu.org/software/make/)
 - ncurses development files
 
-### Installing ncurses
-
-- Debian / Ubuntu: `sudo apt install libncurses-dev`
-- Fedora / RHEL: `sudo dnf install ncurses-devel`
-- Arch: `sudo pacman -S ncurses`
-- macOS: included in the Xcode/Command Line Tools SDK; no install needed
-- Windows (via Cygwin): install the `gcc-core`, `make`, and `libncurses-devel` packages
-
 ## Build
 
 ```sh
+git clone https://github.com/josefnpat/typew
+cd typew
 make
 ```
 
-The resulting binary is `./typew`.
+This produces the `typew` binary in the current directory. To install it
+system-wide:
+
+```sh
+sudo make install
+```
+
+This installs the binary to `/usr/local/bin` and the man page to
+`/usr/local/share/man/man1`. Override the prefix with `make install PREFIX=/usr`
+(and use `DESTDIR` for package staging).
 
 ## Test
 
@@ -37,18 +40,13 @@ make test
 
 Runs the unit test suites. `make check` is an alias for `make test`.
 
-## Install
+## Usage
 
 ```sh
-make
-sudo make install
+typew paper.txt
 ```
 
-Installs the binary to `/usr/local/bin` and the man page to
-`/usr/local/share/man/man1`. Override the prefix with `make install PREFIX=/usr`
-(and use `DESTDIR` for package staging).
-
-## Usage
+Or, with a custom config:
 
 ```sh
 typew [--config CONFIGFILE | -c CONFIGFILE] FILENAME
