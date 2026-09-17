@@ -82,13 +82,15 @@ KeyResult editor_key(Editor *e, Buffer *buf, const Config *cfg, int key) {
 
         int len = buffer_line_len(buf, e->row);
         char existing = e->col < len ? buffer_line(buf, e->row)[e->col] : ' ';
+        char typed = (char)key;
 
-        if (existing != ' ') {
-            buffer_set_char(buf, e->row, e->col, cfg->overwrite);
-        } else {
-            buffer_set_char(buf, e->row, e->col, (char)key);
+        /* Typing a character over itself is a no-op; anything else
+           overwrites, marking the position if a real character was there. */
+        if (existing != typed) {
+            buffer_set_char(buf, e->row, e->col,
+                            existing == ' ' ? typed : cfg->overwrite);
+            e->dirty = 1;
         }
-        e->dirty = 1;
 
         if (e->col < margin)
             e->col++;

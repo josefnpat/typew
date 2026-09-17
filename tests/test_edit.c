@@ -157,6 +157,59 @@ static void test_overwrite_configurable_marker(void) {
     buffer_destroy(&b);
 }
 
+static void test_overwrite_same_char_keeps_it(void) {
+    /* typing the same character over itself must not mark it */
+    Editor e;
+    Buffer b;
+    editor_init(&e);
+    buffer_init(&b);
+    Config *c = new_cfg();          /* overwrite = '#' */
+    type(&e, &b, c, "abc");
+    for (int i = 0; i < 2; i++)
+        editor_key(&e, &b, c, EDIT_KEY_LEFT);   /* col 3 -> col 1 ('b') */
+    editor_key(&e, &b, c, 'b');
+    CHECK_STR(buffer_line(&b, 0), "abc");
+    CHECK_EQ_INT(e.col, 2);         /* cursor still advanced */
+    config_destroy(c);
+    buffer_destroy(&b);
+}
+
+static void test_overwrite_same_char_not_dirty(void) {
+    /* a same-character overstrike changes nothing, so it must not dirty */
+    Editor e;
+    Buffer b;
+    editor_init(&e);
+    buffer_init(&b);
+    Config *c = new_cfg();
+    type(&e, &b, c, "abc");
+    for (int i = 0; i < 2; i++)
+        editor_key(&e, &b, c, EDIT_KEY_LEFT);   /* col 3 -> col 1 ('b') */
+    e.dirty = 0;                    /* pretend the buffer was just saved */
+    editor_key(&e, &b, c, 'b');
+    CHECK_EQ_INT(e.dirty, 0);
+    CHECK_STR(buffer_line(&b, 0), "abc");
+    config_destroy(c);
+    buffer_destroy(&b);
+}
+
+static void test_overwrite_same_char_configurable_marker(void) {
+    /* behavior is independent of the configured marker character */
+    Editor e;
+    Buffer b;
+    editor_init(&e);
+    buffer_init(&b);
+    Config c;
+    config_defaults(&c);
+    c.overwrite = 'X';
+    type(&e, &b, &c, "abc");
+    for (int i = 0; i < 2; i++)
+        editor_key(&e, &b, &c, EDIT_KEY_LEFT);   /* col 3 -> col 1 ('b') */
+    editor_key(&e, &b, &c, 'b');
+    CHECK_STR(buffer_line(&b, 0), "abc");
+    config_destroy(&c);
+    buffer_destroy(&b);
+}
+
 /* ------------------------------------------------------------------ */
 /* end-of-line lock: no chars past margin, only bell                  */
 /* ------------------------------------------------------------------ */
@@ -529,6 +582,9 @@ void run_edit_tests(void) {
     test_overwrite_non_space_uses_marker();
     test_overwrite_space_prints_typed_char();
     test_overwrite_configurable_marker();
+    test_overwrite_same_char_keeps_it();
+    test_overwrite_same_char_not_dirty();
+    test_overwrite_same_char_configurable_marker();
     test_lock_stops_past_line_length();
     test_bell_once_per_line();
     test_bell_reset_on_new_line();
